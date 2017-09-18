@@ -27,6 +27,34 @@
     </inertial>
   </xacro:macro>
 
+
+
+  <link name="elbow">
+    <visual>
+      <geometry>
+        <box size="0.05 0.05 ${arm_support_height}"/>
+      </geometry>
+      <material name="blue"/>
+      <origin xyz="0 0 0"/>
+
+    </visual>
+    <collision>
+      <geometry>
+        <box size="${main_base_dims} ${main_base_dims} ${main_base_dims}"/>
+      </geometry>
+    </collision>
+    <xacro:default_inertial mass="10"/>
+  </link>
+
+  <joint name="eblow" type="continuous">
+    <axis xyz="1 0 0" rpy="0 0 0" />
+
+    <parent link="base_arm"/>
+    <child link="elbow"/>
+    <origin xyz="0 0 ${ base_arm_len }"/>
+  </joint>
+
+
   <link name="base_arm">
     <visual>
       <geometry>
@@ -44,7 +72,7 @@
     <xacro:default_inertial mass="10"/>
   </link>
 
-  <joint name="base_arm_to_base_arm_support" type="continuous">
+  <joint name="shoulder" type="continuous">
     <axis xyz="1 0 0" rpy="0 0 0" />
 
     <parent link="base_arm_support"/>
@@ -111,7 +139,7 @@
     <xacro:default_inertial mass="10"/>
   </link>
 
-  <joint name="base_link_to_main_base" type="continuous">
+  <joint name="base" type="continuous">
     <axis xyz="0 0 1" rpy="0 0 0" />
 
     <parent link="base_link"/>
