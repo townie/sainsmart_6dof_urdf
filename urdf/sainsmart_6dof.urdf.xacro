@@ -5,9 +5,12 @@
   <xacro:property name="main_base_bodylen" value="0.06" />
   <xacro:property name="main_base_dims" value="0.1" />
   <xacro:property name="main_base_height" value="0.01" />
-  <xacro:property name="supportlen" value="0.07" />
   <xacro:property name="pi" value="3.1415" />
+  <xacro:property name="arm_support_height" value="0.07" />
+  <xacro:property name="arm_support_width" value="0.07" />
 
+  <xacro:property name="base_arm_len" value="0.2" />
+  <xacro:property name="base_arm_width" value="0.02" />
 
   <material name="blue">
     <color rgba="0 0 0.8 1"/>
@@ -26,56 +29,61 @@
 
 
 
+  <link name="base_arm">
+    <visual>
+      <geometry>
+        <cylinder radius="${base_arm_width}" length="${base_arm_len}"/>
+      </geometry>
+      <material name="blue"/>
+      <origin xyz="${base_arm_width} 0 ${ base_arm_len/2}"/>
 
-<!-- 
-  <xacro:macro name="support" params="prefix reflect">
-    <link name="${prefix}_support">
-      <visual>
-        <geometry>
-          <box size="${supportlen} 0.1 0.2"/>
-        </geometry>
-        <origin xyz="0 0 -${supportlen/2}" rpy="0 ${pi/2} 0"/>
-        <material name="white"/>
-      </visual>
-      <collision>
-        <geometry>
-          <box size="${supportlen} 0.1 0.2"/>
-        </geometry>
-        <origin xyz="0 0 -${supportlen/2}" rpy="0 ${pi/2} 0"/>
-      </collision>
-      <xacro:default_inertial mass="10"/>
-    </link>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="${main_base_width}" length="${main_base_bodylen}"/>
+      </geometry>
+    </collision>
+    <xacro:default_inertial mass="10"/>
+  </link>
 
-    <joint name="base_to_${prefix}_support" type="fixed">
-      <parent link="main_base"/>
-      <child link="${prefix}_support"/>
-      <origin xyz="0 ${reflect*(main_base_width+.02)} 0.25" />
-    </joint>
 
-    <link name="${prefix}_base">
-      <visual>
-        <geometry>
-          <box size="${main_base_dims} 0.1 0.1"/>
-        </geometry>
-        <material name="white"/>
-      </visual>
-      <collision>
-        <geometry>
-          <box size="${main_base_dims} 0.1 0.1"/>
-        </geometry>
-      </collision>
-      <xacro:default_inertial mass="10"/>
-    </link>
 
-    <joint name="${prefix}_base_joint" type="fixed">
-      <parent link="${prefix}_support"/>
-      <child link="${prefix}_base"/>
-      <origin xyz="0 0 ${-supportlen}" />
-    </joint>
-  </xacro:macro>
+  <joint name="base_arm_to_base_arm_support" type="continuous">
+    <axis xyz="1 0 0" rpy="0 0 0" />
 
-  <xacro:support prefix="right" reflect="-1" />
-  <xacro:support prefix="left" reflect="1" /> -->
+    <parent link="base_arm_support"/>
+    <child link="base_arm"/>
+    <origin xyz="0 0 ${(main_base_bodylen + main_base_height )}"/>
+  </joint>
+
+
+
+
+  <link name="base_arm_support">
+    <visual>
+      <geometry>
+        <box size="0.01 0.1 ${arm_support_height}"/>
+      </geometry>
+      <material name="blue"/>
+      <origin xyz="0 0 ${(main_base_bodylen ) + main_base_height }"/>
+
+    </visual>
+    <collision>
+      <geometry>
+        <box size="${main_base_dims} ${main_base_dims} ${main_base_dims}"/>
+      </geometry>
+    </collision>
+    <xacro:default_inertial mass="10"/>
+  </link>
+
+  <joint name="base_arm_support_to_main_base" type="fixed">
+    <axis xyz="0 0 1" rpy="0 0 0" />
+
+    <parent link="main_base"/>
+    <child link="base_arm_support"/>
+    <origin xyz="0 0 0"/>
+  </joint>
+
 
   <link name="main_base">
     <visual>
@@ -83,7 +91,7 @@
         <cylinder radius="${main_base_width}" length="${main_base_bodylen}"/>
       </geometry>
       <material name="blue"/>
-      <origin xyz="0 0 ${(main_base_bodylen/2.0) + main_base_height }"/>
+      <origin xyz="0 0 ${(main_base_bodylen/2.0) + (main_base_height/2.0) }"/>
 
     </visual>
     <collision>
