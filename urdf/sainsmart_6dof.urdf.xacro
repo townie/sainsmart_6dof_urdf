@@ -26,7 +26,6 @@
   <xacro:property name="interface_len" value="0.03" />
   <xacro:property name="interface_width" value="0.02" />
 
-
   <!-- Materials -->
 
   <material name="blue">
@@ -74,7 +73,6 @@
 
 
 <!-- Wrist -->
-
 
   <link name="wrist">
     <visual>
